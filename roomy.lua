@@ -1,30 +1,30 @@
 local roomy = {
-	_VERSION = 'Roomy',
-	_DESCRIPTION = 'Scene management for Playdate sdk, adapted from https://github.com/tesselode/roomy',
-	_URL = '',
-	_LICENSE = [[
-		MIT License
+  _VERSION = 'Roomy',
+  _DESCRIPTION = 'Scene management for Playdate sdk, adapted from https://github.com/tesselode/roomy',
+  _URL = '',
+  _LICENSE = [[
+    MIT License
 
-		Copyright (c) 2022 Robert Curry
+    Copyright (c) 2022 Robert Curry
 
-		Permission is hereby granted, free of charge, to any person obtaining a copy
-		of this software and associated documentation files (the "Software"), to deal
-		in the Software without restriction, including without limitation the rights
-		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-		copies of the Software, and to permit persons to whom the Software is
-		furnished to do so, subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-		The above copyright notice and this permission notice shall be included in all
-		copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
 
-		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-		SOFTWARE.
-	]]
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+  ]]
 }
 
 import "CoreLibs/object"
@@ -42,18 +42,18 @@ function Room:__tostring()
 end
 
 function Room:init()
-	self._sprites = {}
+  self._sprites = {}
 end
 
 function Room:enter(previous) end
 
 function Room:leave(next)
-	self:clear()
+  self:clear()
 end
 
 function Room:pause(previous)
-	self:cacheSprites()
-	self:clear()
+  self:cacheSprites()
+  self:clear()
 end
 
 function Room:resume(next)
@@ -63,11 +63,11 @@ function Room:resume(next)
 end
 
 function Room:clear()
-	gfx.sprite.removeAll()
+  gfx.sprite.removeAll()
 end
 
 function Room:cacheSprites()
-	self._sprites = gfx.sprite.getAllSprites()
+  self._sprites = gfx.sprite.getAllSprites()
 end
 
 ----------------------------------------------------
@@ -80,17 +80,12 @@ function PauseRoom:enter(...)
   PauseRoom.super.enter(self, ...)
   local img = gfx.getDisplayImage()
   self.bgSprite = gfx.sprite.new(img)
-	self.bgSprite:setIgnoresDrawOffset(true)
+  self.bgSprite:setIgnoresDrawOffset(true)
   self.bgSprite:setCenter(0,0)
   self.bgSprite:moveTo(0,0)
   self.bgSprite:setZIndex(-1)
 
   self.bgSprite:add()
-end
-
-function PauseRoom:resume(...)
-	gfx.clear()
-  PauseRoom.super.resume(self, ...)
 end
 
 ----------------------------------------------------
@@ -126,7 +121,7 @@ function Manager:printStack()
 end
 
 function Manager:init()
-	self._scenes = {{}}
+  self._scenes = {{}}
 end
 
 function Manager:hook(options)
@@ -148,15 +143,15 @@ function Manager:hook(options)
 end
 
 function Manager:emit(event, ...)
-	local scene = self._scenes[#self._scenes]
-	if scene and scene[event] then scene[event](scene, ...) end
+  local scene = self._scenes[#self._scenes]
+  if scene and scene[event] then scene[event](scene, ...) end
 end
 
 function Manager:enter(next, ...)
-	local previous = self._scenes[#self._scenes]
-	self:emit('leave', next, ...)
-	self._scenes[#self._scenes] = next
-	self:emit('enter', previous, ...)
+  local previous = self._scenes[#self._scenes]
+  self:emit('leave', next, ...)
+  self._scenes[#self._scenes] = next
+  self:emit('enter', previous, ...)
 end
 
 function Manager:resetAndEnter(next, ...)
@@ -167,19 +162,19 @@ function Manager:resetAndEnter(next, ...)
 end
 
 function Manager:push(next, ...)
-	local previous = self._scenes[#self._scenes]
-	self:emit('pause', next, ...)
-	self._scenes[#self._scenes + 1] = next
-	self:emit('enter', previous, ...)
+  local previous = self._scenes[#self._scenes]
+  self:emit('pause', next, ...)
+  self._scenes[#self._scenes + 1] = next
+  self:emit('enter', previous, ...)
 end
 
 function Manager:pop(...)
-	local previous = self._scenes[#self._scenes]
+  local previous = self._scenes[#self._scenes]
   -- always keep at least one scene active
   if previous == nil or #self._scenes < 2 then return end
 
-	local next = self._scenes[#self._scenes - 1]
-	self:emit('leave', next, ...)
-	self._scenes[#self._scenes] = nil
-	self:emit('resume', previous, ...)
+  local next = self._scenes[#self._scenes - 1]
+  self:emit('leave', next, ...)
+  self._scenes[#self._scenes] = nil
+  self:emit('resume', previous, ...)
 end
