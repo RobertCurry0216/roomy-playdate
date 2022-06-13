@@ -107,7 +107,9 @@ local handler_functions = {
   "rightButtonUp",
   "upButtonDown",
   "upButtonUp",
-  "cranked"
+  "cranked",
+  "crankDocked",
+  "crankUndocked"
 }
 
 class("Manager").extends()
