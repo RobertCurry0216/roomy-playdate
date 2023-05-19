@@ -1,14 +1,32 @@
 # Roomy-Playdate
 
+[![Toybox Compatible](https://img.shields.io/badge/toybox.py-compatible-brightgreen)](https://toyboxpy.io)
+
 **Roomy-playdate** is a scene management library for the Playdate console by Panic. It helps organize game code by the different "screens" in the game, such as the title screen, gameplay screen, and pause screen. Roomy was originally written for LÖVE by tesselode [Github link](https://github.com/tesselode/roomy)
 
-## Installation
+# Install
 
-To use Roomy, place roomy.lua in your project, and then `import` it in:
+### Toybox
+
+You can add it to your Playdate project by installing toybox.py, going to your project folder in a Terminal window and typing:
 
 ```lua
-import 'roomy' -- if your roomy.lua is in the root directory
-import 'path/to/roomy' -- if it's in subfolders
+toybox add roomy
+toybox update
+```
+
+Then, if your code is in the source folder, just import the following:
+
+```lua
+import '../toyboxes/toyboxes.lua'
+```
+
+### Manual install
+
+To install roomy, simply copy the roomy-playdate.lua file into your game directory and import it into your game.
+
+```lua
+import "roomy-playdate"
 ```
 
 ## Usage
@@ -96,8 +114,9 @@ manager:hook(options)
 ```
 
 Pushes an input handler that will emit events for each callback. `options` is an optional table with the following keys:
-- `include` - a list of callbacks to hook into. If this is defined, *only* these callbacks will be overridden.
-- `exclude` - a list of callbacks *not* to hook into. If this is defined, all of the callbacks except for these ones will be overridden.
+
+- `include` - a list of callbacks to hook into. If this is defined, _only_ these callbacks will be overridden.
+- `exclude` - a list of callbacks _not_ to hook into. If this is defined, all of the callbacks except for these ones will be overridden.
 
 As an example, the following code will cause the scene manager to hook into every callback except for `AButtonDown` and `AButtonHeld`.
 
@@ -115,7 +134,8 @@ Scenes have a few special callbacks that are called when a scene is switched, pu
 function scene:enter(previous, ...) end
 ```
 
-Called when a manager switches *to* this scene or if this scene is pushed on top of another scene.
+Called when a manager switches _to_ this scene or if this scene is pushed on top of another scene.
+
 - `previous` - the previously active scene, or `{}` if there was no previously active scene
 - `...` - additional arguments passed to `manager:enter` or `manager:push`
 
@@ -123,7 +143,8 @@ Called when a manager switches *to* this scene or if this scene is pushed on top
 function scene:leave(next, ...) end
 ```
 
-Called when a manager switches *away from* this scene or if this scene is popped from the stack.
+Called when a manager switches _away from_ this scene or if this scene is popped from the stack.
+
 - `next` - the scene that will be active next
 - `...` - additional arguments passed to `manager:enter` or `manager:pop`
 
@@ -132,6 +153,7 @@ function scene:pause(next, ...) end
 ```
 
 Called when a scene is pushed on top of this scene.
+
 - `next` - the scene that was pushed on top of this scene
 - `...` - additional arguments passed to `manager:push`
 - the `Room` class will cache and remove all current sprites
@@ -141,6 +163,7 @@ function scene:resume(previous, ...) end
 ```
 
 Called when a scene is popped and this scene becomes active again.
+
 - `previous` - the scene that was popped
 - `...` - additional arguments passed to `manager:pop`
 - the `Room` class will add all sprites that were cached when the scene was paused
